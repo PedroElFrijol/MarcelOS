@@ -16,4 +16,4 @@ bootloader:
 	cat $(OBJDIR)/boot.bin $(OBJDIR)/zeroes.bin > $(OBJDIR)/x86.bin
  
 run:
-	qemu-system-x86_64 -drive format=raw,file="bin/x86.bin",index=0,if=floppy, -m 128M
+	qemu-system-i386 -drive format=raw,file="bin/x86.bin",index=0,if=floppy, -m 128M
