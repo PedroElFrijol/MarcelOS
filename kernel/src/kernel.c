@@ -1,6 +1,7 @@
 #include "kernel.h"
 
 void _start(){
-    *(char*)0xb8000 = 'E';
+    char* video_memory = (char*) 0xb8000;
+    *video_memory = 'E';
     return;
 }
