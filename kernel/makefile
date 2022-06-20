@@ -12,6 +12,7 @@ bootloader:
 	$(NASM) $(SRCDIR)/kernelEntry.asm -f elf -o $(OBJDIR)/kernelEntry.o
 	$(NASM) $(SRCDIR)/zeroes.asm -f bin -o $(OBJDIR)/zeroes.bin
 	$(CC) $(CFLAGS) $(SRCDIR)/kernel.c -o $(OBJDIR)/kernel.o	
+	$(CC) $(CFLAGS) $(SRCDIR)/kernel.h -o $(OBJDIR)/kernel.o
  
 	cat $(OBJDIR)/boot.bin $(OBJDIR)/zeroes.bin > $(OBJDIR)/x86.bin
  
