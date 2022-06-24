@@ -46,14 +46,13 @@ BOOT_DISK: db 0
 ;GDT
 beginGDT:
     nullDesc:
-        dd 0 ;4 times 00000000
-        dd 0 ;4 times 00000000
+        dq 0
     codeDesc:
         dw 0xffff ;first 16 bits of the limit
         dw 0 ;dw + db = 24
         db 0 ;16 + 8 = first 24 bits of the base
 
-        db 0b10011010 ;present, privilege and type properties
+        db 0x9a ;present, privilege and type properties
         db 0b11001111 ;other + limit = last four bits
         db 0 ;last 8 bits of the base
     dataDesc:
@@ -61,7 +60,7 @@ beginGDT:
         dw 0xffff
         dw 0
         db 0
-        db 0b10010010
+        db 0x92
         db 0b11001111
         db 0
 endGDT:
@@ -73,17 +72,20 @@ GDTDesc:
 
 [bits 32]
 beginProtectedMode:
+    
     ;video memory starts at 0xb8000
 
     mov eax, dataSegment
-        mov ds, ax 
-        mov es, ax
-        mov ss, ax 
-        mov fs, ax
-        mov gs, ax
+    mov ds, ax 
+    mov es, ax
+    mov ss, ax 
+    mov fs, ax
+    mov gs, ax
 
-        mov ebp, 0x90000 ;32 bit stackbase pointer
-        mov esp, ebp 
+    jmp $
+
+    mov ebp, 0x90000 ;32 bit stackbase pointer
+    mov esp, ebp 
 
     ;cs: "code segment" - instruction fetches use this
     ;ds: "data segment" - most memory accesses (by default)
