@@ -1,1 +1,0 @@
-times 10240 db 0 ; fixes a disk error and adds a ton of zeroes
