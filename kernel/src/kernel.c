@@ -1,6 +1,8 @@
 #include "kernel.h"
 
-void kernel_main(void) {
-    *(char*)0xb8000 = 'E';
+void _start(){
+    char* video_memory = (char*) 0xb8000;
+    *video_memory = 'E';
+    Print(video_memory, "Marcelo OS");
     return;
 }
