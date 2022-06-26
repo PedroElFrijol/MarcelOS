@@ -48,19 +48,19 @@ beginGDT:
     nullDesc:
         dq 0
     codeDesc:
-        dw 0xffff ;first 16 bits of the limit
-        dw 0 ;dw + db = 24
-        db 0 ;16 + 8 = first 24 bits of the base
+        dw 0xffff ; First 16 bits of the limit
+        dw 0 ; Base(Low)
+        db 0 ; Base(Medium)
 
-        db 0x9a ;present, privilege and type properties
-        db 0b11001111 ;other + limit = last four bits
-        db 0 ;last 8 bits of the base
+        db 0b11001111 ; Flag
+        db 0b11001111 ; Flag and Upper Limit
+        db 0 ;last 8 bits of the base, Base (High)
     dataDesc:
         ;doing the same thing as the code descriptor
         dw 0xffff
         dw 0
         db 0
-        db 0x92
+        db 0b11001111
         db 0b11001111
         db 0
 endGDT:
