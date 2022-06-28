@@ -1,2 +1,2 @@
-# Marcelo OS
-32 bit Operating System
+# MarcelOS
+32 bit Operating System named after me, Marcelo
