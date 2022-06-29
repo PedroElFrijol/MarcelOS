@@ -21,7 +21,7 @@ mov bx, 0x7e00
 
 mov ah, 2
 mov al, 1 ;number of sectors we want to read which is 1
-mov ch, 0 ;cylinder number whihc is 0
+mov ch, 0 ;cylinder number which is 0
 mov dh, 0 ;head number which equals 0
 mov cl, 2 ;the sector number which equals 2
 mov dl, [BOOT_DISK] ;drive number we saved in the variable

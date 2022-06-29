@@ -1,2 +1,5 @@
 # MarcelOS
-32 bit Operating System named after me, Marcelo
+32 bit Operating System named after me, Marcelo.
+
+## How to run the OS
+You need Clang and Make.

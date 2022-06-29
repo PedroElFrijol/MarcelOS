@@ -1,5 +1,5 @@
 OUTPUT_FORMAT(binary)           /*binary would be the output after compiling*/
-ENTRY (_start)
+ENTRY (kernel_main)
 
 SECTIONS
 {
