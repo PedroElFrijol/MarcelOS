@@ -2,4 +2,4 @@
 32 bit Operating System named after me, Marcelo.
 
 ## How to run the OS
-You need Clang and Make.
+You need Clang, lld, and Make.
