@@ -1,11 +1,7 @@
 #pragma once
 
-struct Coordinates{
-    int X;
-    int Y;
-};
+void ClearScreen();
+void Coordinates(int x, int y);
 
-void Print(char* video_memory, char* str){
-    video_memory = (char*) 0xb8000;
-    char* chr = (char*)str;
-}
+unsigned int Print(char* str, unsigned int pixels);
+char* video_memory = (char*) 0xb8000; //start of video meory in protected mode

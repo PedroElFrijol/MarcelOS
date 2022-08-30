@@ -1,11 +1,26 @@
 #include "kernel.h"
+#define WHITE 0x07
 
-void kernel_main(void){
+unsigned int i = 0;
 
-    char* video_memory = (char*) 0xb8000;
-    *video_memory = 'E';
+void ClearScreen(){
+    while(i < (80*25*2)){ //80 by 25 characters, each character takes up 2 bytes
+    //Loop adds 1 to "i" so we can get to the next byte of video memory then place 0x07 in that spot
+        video_memory[i] = ' ';
+        i++;
+        video_memory[i] = WHITE;
+        i++;
+    }
+};
 
-    for(;;);
+unsigned int Print(char* str, unsigned int pixels){
+    i = (pixels*80*2);
+    return 0;
+};
+
+int kernel_main(){
+    ClearScreen();
+    Print("Welcome to MarcelOS!", 0); //0 is the first line of video memory
     
-    return;
-}
+    return 0;
+};

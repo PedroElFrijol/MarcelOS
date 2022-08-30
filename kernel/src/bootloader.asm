@@ -1,9 +1,10 @@
-[bits 16]
+[bits 16] ;PC starts in Real Mode which is 16 bit
 [org 0x7c00] ;sets the offset to which all absolute addresses will be relative to
 ;equals to "mov ds, 0x7c0" in real mode
 
 ;al and ah are 8 bit char size registers, al = high 8 bits and ah low 8 bits
 ;ah = bios scand code and al = ascii character (when int 0x16)
+;bl register is used to set a page number
 
 kernelLocation equ 0x7c00 + 0x200
 
