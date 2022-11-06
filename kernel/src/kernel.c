@@ -14,7 +14,7 @@ void ClearScreen(){
 };
 
 unsigned int Print(char* str, unsigned int pixels){
-    i = (pixels*80*2);
+    i = (pixels * 80 * 2);
     return 0;
 };
 

@@ -19,3 +19,5 @@ bootloader:
 	
 run:
 	qemu-system-i386 -drive format=raw,file="bin/x86.bin",index=0,if=floppy, -m 128M
+
+#export DISPLAY=:0
