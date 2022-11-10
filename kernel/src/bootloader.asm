@@ -2,6 +2,8 @@
 [org 0x7c00] ;sets the offset to which all absolute addresses will be relative to
 ;equals to "mov ds, 0x7c0" in real mode
 
+;0x7c00 is the memory address where the BIOS loads Master boot Record (MBR) which is the first sector in the drive
+
 ;al and ah are 8 bit char size registers, al = high 8 bits and ah low 8 bits
 ;ah = bios scand code and al = ascii character (when int 0x16)
 ;bl register is used to set a page number
@@ -9,7 +11,10 @@
 kernelLocation equ 0x7c00 + 0x200
 
 ;reading from disk  
+;the disk we are trying to read is most likely the disk we booted from (aka "dl")
 mov [BOOT_DISK], dl  
+
+;each section is 512 bytes long
 
 ;segment registers  
 xor ax, ax                          
@@ -24,7 +29,7 @@ mov ah, 2
 mov al, 1 ;number of sectors we want to read which is 1
 mov ch, 0 ;cylinder number which is 0
 mov dh, 0 ;head number which equals 0
-mov cl, 2 ;the sector number which equals 2
+mov cl, 2 ;the sector number which equals 2 because we are reading from the second sector of the same head and the same cyilnder
 mov dl, [BOOT_DISK] ;drive number we saved in the variable
 int 0x13 ;or 13h for disk access
 
