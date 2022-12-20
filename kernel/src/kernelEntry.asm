@@ -7,5 +7,4 @@ section .text
         call kernel_main
 
         cli ;stop interrupts
-        hlt ;halt cpu
         jmp $

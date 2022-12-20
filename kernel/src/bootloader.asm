@@ -1,5 +1,5 @@
-[bits 16] ;PC starts in Real Mode which is 16 bit
-[org 0x7c00] ;sets the offset to which all absolute addresses will be relative to
+[bits 16] ;computer starts in Real Mode which is 16 bit
+[org 0x7c00] ;tells the compiler where the code will be (origin)
 ;equals to "mov ds, 0x7c0" in real mode
 
 ;0x7c00 is the memory address where the BIOS loads Master boot Record (MBR) which is the first sector in the drive
@@ -8,7 +8,7 @@
 ;ah = bios scand code and al = ascii character (when int 0x16)
 ;bl register is used to set a page number
 
-kernelLocation equ 0x7c00 + 0x200
+kernelLocation equ 0x7c00 + 0x200 ;set the kernel location here, origin + bootsector size()
 
 ;reading from disk  
 ;the disk we are trying to read is most likely the disk we booted from (aka "dl")
@@ -17,13 +17,18 @@ mov [BOOT_DISK], dl
 ;each section is 512 bytes long
 
 ;segment registers  
-xor ax, ax                          
-mov es, ax
-mov ds, ax
-mov bp, 0x7c00
-mov sp, bp
+xor ax, ax ;set ax register to 0                 
+mov es, ax ;set extra segmentes to 0
+mov ds, ax ;set data segment to 0
 
-mov bx, 0x7e00
+cli ;disable interrpts just to make sure one does not happen while setting up stack segments
+mov bp, 0x7c00 ;Holds the base address of the stack
+mov sp, bp
+mov ss, ax
+sti; enable interrupts
+
+mov bx, kernelLocation ;this is where we load the sectors (kernel location)
+;bx is a pointer to data
 
 mov ah, 2
 mov al, 1 ;number of sectors we want to read which is 1
@@ -33,9 +38,9 @@ mov cl, 2 ;the sector number which equals 2 because we are reading from the seco
 mov dl, [BOOT_DISK] ;drive number we saved in the variable
 int 0x13 ;or 13h for disk access
 
-mov ah, 0x0e
-mov al, [0x7e00]
-int 0x10
+mov ah, 0
+mov al, 3
+int 0x10 ;runs bios video interrupt
 
 codeSegment equ codeDesc - beginGDT
 dataSegment equ dataDesc - beginGDT
@@ -47,18 +52,23 @@ or eax, 1 ;perform bitwise or operation with one that changes the last bit of ea
 mov cr0, eax ;move eax to cr0 and now the cpu is in 32 bit protected mode
 jmp codeSegment:beginProtectedMode
 
+jmp $
+
 BOOT_DISK: db 0
 
 %include "gdt.asm"
 
 [bits 32]
 beginProtectedMode:
-    mov  ESP, 0x105000  ; Set the stack pointer
+    mov si, text ;point text to source index
+    call print               
+
+    text db 'Welcome to MarcelOS!',0
+
+    print:
+        mov ah, 0x0E
 
     jmp kernelLocation
 
 times 510-($-$$) db 0
 dw 0xaa55 ;define word (2 bytes)
-
-;push 6
-;pop ax == mov ax, 6

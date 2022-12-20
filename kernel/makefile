@@ -21,4 +21,3 @@ run:
 	qemu-system-i386 -drive format=raw,file="bin/x86.bin",index=0,if=floppy, -m 128M
 
 #export DISPLAY=:0
-#export DISPLAY=172.26.48.1:0.0
