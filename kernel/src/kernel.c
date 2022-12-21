@@ -18,9 +18,12 @@ unsigned int Print(char* str, unsigned int pixels){
     return 0;
 };
 
-int kernel_main(){
+void __attribute__((section("__start"))) main(){
     ClearScreen();
     Print("Welcome to MarcelOS!", 0); //0 is the first line of video memory
-    
-    return 0;
+
+    // Test to see if it works
+    *video_memory = 'a';
+
+    while(1);
 };

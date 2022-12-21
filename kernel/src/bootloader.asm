@@ -1,34 +1,30 @@
 [bits 16] ;computer starts in Real Mode which is 16 bit
-[org 0x7c00] ;tells the compiler where the code will be (origin)
-;equals to "mov ds, 0x7c0" in real mode
+[org 0x7C00] ;tells the compiler where the code will be (origin)
 
-;0x7c00 is the memory address where the BIOS loads Master boot Record (MBR) which is the first sector in the drive
+; Set video mode
+mov ah, 0x00
+mov al, 0x03
+int 0x10 ;runs bios video interrupt
 
-;al and ah are 8 bit char size registers, al = high 8 bits and ah low 8 bits
-;ah = bios scand code and al = ascii character (when int 0x16)
-;bl register is used to set a page number
-
-kernelLocation equ 0x7c00 + 0x200 ;set the kernel location here, origin + bootsector size()
-
-;reading from disk  
-;the disk we are trying to read is most likely the disk we booted from (aka "dl")
-mov [BOOT_DISK], dl  
-
-;each section is 512 bytes long
-
-;segment registers  
+; Clear out ds and es 
 xor ax, ax ;set ax register to 0                 
-mov es, ax ;set extra segmentes to 0
+mov es, ax ;set ax register to 0     
 mov ds, ax ;set data segment to 0
 
-cli ;disable interrpts just to make sure one does not happen while setting up stack segments
+; Setup stack segments
+cli ;disable interrupts just to make sure one does not happen while setting up stack segments
 mov bp, 0x7c00 ;Holds the base address of the stack
 mov sp, bp
 mov ss, ax
-sti; enable interrupts
+sti ;enabling interrupts
 
-mov bx, kernelLocation ;this is where we load the sectors (kernel location)
-;bx is a pointer to data
+; Store drive number
+mov [BOOT_DISK], dl ;the disk we are trying to read is most likely the disk we booted from (aka "dl")
+
+; Read in sectors
+mov ax, kernelLocation
+mov es, ax          
+xor bx, bx          ; bx=0, bx:es=0x0:0x07E0=0x7E00
 
 mov ah, 2
 mov al, 1 ;number of sectors we want to read which is 1
@@ -37,29 +33,36 @@ mov dh, 0 ;head number which equals 0
 mov cl, 2 ;the sector number which equals 2 because we are reading from the second sector of the same head and the same cyilnder
 mov dl, [BOOT_DISK] ;drive number we saved in the variable
 int 0x13 ;or 13h for disk access
+;jc failed
 
-mov ah, 0
-mov al, 3
-int 0x10 ;runs bios video interrupt
+;Enabling the A20 Line
+mov al, 0x92
+or al, 0x02
+out 0x92, al
 
-codeSegment equ codeDesc - beginGDT
-dataSegment equ dataDesc - beginGDT
 
-cli ;disable all interrupts
-lgdt [GDTDesc] ;load gdt
+; Loading GDT
+cli
+lgdt [GDTDesc]
 mov eax, cr0
-or eax, 1 ;perform bitwise or operation with one that changes the last bit of eax to 1
-mov cr0, eax ;move eax to cr0 and now the cpu is in 32 bit protected mode
+or eax, 0x01
+mov cr0, eax
+
 jmp codeSegment:beginProtectedMode
 
 jmp $
 
-BOOT_DISK: db 0
-
-%include "gdt.asm"
+%include "src/gdt.asm"
 
 [bits 32]
 beginProtectedMode:
+    mov ax, dataSegment
+    mov es, ax
+    mov ds, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+
     mov si, text ;point text to source index
     call print               
 
@@ -68,7 +71,12 @@ beginProtectedMode:
     print:
         mov ah, 0x0E
 
-    jmp kernelLocation
+    jmp codeSegment:kernelLocation
+    jmp codeSegment:kernel_exact
 
-times 510-($-$$) db 0
-dw 0xaa55 ;define word (2 bytes)
+BOOT_DISK db 0
+kernelLocation equ 0x07E0 ; segment:offset = 0x0:0x07E0=0x7E00
+kernel_exact equ 0x7c00 + 0x200 ; actual address
+
+times 510 - ($ - $$) db 0x0
+dw 0xAA55

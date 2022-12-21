@@ -24,3 +24,6 @@ GDTDesc:
     ;2 entries
     dw endGDT - beginGDT - 1 ;size
     dd beginGDT ;start
+    ; 0x08
+codeSegment equ codeDesc - beginGDT
+dataSegment equ dataDesc - beginGDT
