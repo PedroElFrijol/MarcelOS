@@ -1,6 +1,0 @@
-make --dry-run --keep-going --print-directory
-make: Entering directory `/Users/marcelomrios/MarcelOS'
-make: Leaving directory `/Users/marcelomrios/MarcelOS'
- 
-make: *** No targets specified and no makefile found.  Stop.
-
