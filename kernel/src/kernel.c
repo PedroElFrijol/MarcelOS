@@ -23,7 +23,7 @@ void __attribute__((section("__start"))) main(){
     Print("Welcome to MarcelOS!", 0); //0 is the first line of video memory
 
     // Test to see if it works
-    *video_memory = 'a';
+    *video_memory = 'e';
 
     while(1);
 };

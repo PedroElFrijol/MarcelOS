@@ -23,7 +23,7 @@ sti ;enabling interrupts
 mov [BOOT_DISK], dl ;the disk we are trying to read is most likely the disk we booted from (aka "dl")
 
 ; Read in sectors
-mov ax, kernel_loc
+mov ax, kernelLocation
 mov es, ax          
 xor bx, bx  ; segment:offset = es:bx
 ; formula = (segment * 16) + offset
@@ -62,16 +62,16 @@ failed:
   mov ah, 0x0E
   mov al, 'E'
   int 0x10
-.read_failed_hlt:
-  jmp .read_failed_hlt
+read_failed_hlt:
+  jmp read_failed_hlt
 
 print:
   mov ah, 0x0E    ; BIOS teletyping function
 
-.print_loop:      ;loop until string is null terminated (\0)
+printLoop:      ;loop until string is null terminated (\0)
   mov al, [si]    ;get current character
   cmp al, 0x0     ;is `al` 0(null terminated)?
-  je .end_print   ;if yes, loop no more and return
+  je endPrint   ;if yes, loop no more and return
 
   ; `al` stores the character to print, so if it isn't 0(\0), its a valid character.
   ; invoke `int 0x10` to print character via `AH=0x0E`
@@ -80,8 +80,10 @@ print:
   ; increment the address of `si` to get next character
   inc si
   ; continue the loop until we reach 0x0(\0)
-  jmp .print_loop
-    ret
+  jmp printLoop
+
+endPrint:
+  ret ;return to wherever we called the label from
 
 [bits 32]
 beginProtectedMode:

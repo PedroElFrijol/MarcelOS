@@ -1,7 +1,7 @@
 CC = clang
 NASM = nasm
 CFLAGS = -masm=intel -O1 -Wno-error -c -nostdinc -nostdlib -fno-builtin -fno-stack-protector -ffreestanding -m32
-LD = ld64
+LD = ld.lld #ld64 for macos
  
 SRCDIR = src
 OBJDIR = bin
