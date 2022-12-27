@@ -1,10 +1,11 @@
 #include "kernel.h"
-#define WHITE 0x07
+#define WHITE 0x07 //black background with white text
 
 unsigned int i = 0;
 
 void ClearScreen(){
-    while(i < (80*25*2)){ //80 by 25 characters, each character takes up 2 bytes
+    while(i < (80*25*2)){ //80 by 25 characters, each character takes up 2 bytes (80 * 25) is the text mode on x86 machines)
+    //Since we access video memory one byte at a time we will need to multiply it by 2 so that each character takes up 2 bytes
     //Loop adds 1 to "i" so we can get to the next byte of video memory then place 0x07 in that spot
         video_memory[i] = ' ';
         i++;
