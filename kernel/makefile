@@ -6,7 +6,7 @@ LD = ld.lld #ld64 for macos
 SRCDIR = src
 OBJDIR = bin
  
-all: bootloader run
+all: bootloader image run
  
 bootloader: 
 	$(NASM) $(SRCDIR)/bootloader.asm -f bin -o $(OBJDIR)/boot.bin
@@ -16,6 +16,9 @@ bootloader:
 
 	cat $(OBJDIR)/boot.bin $(OBJDIR)/kernel.out > $(OBJDIR)/x86.bin
 	
+image:
+	dd if=x86.bin of=OS.img
+
 run:
 	qemu-system-i386 -drive format=raw,file=bin/x86.bin,if=ide,index=0,media=disk
 
