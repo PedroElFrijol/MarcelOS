@@ -17,7 +17,7 @@ bootloader:
 	cat $(OBJDIR)/boot.bin $(OBJDIR)/kernel.out > $(OBJDIR)/x86.bin
 	
 image:
-	dd if=x86.bin of=OS.img
+	dd if=$(OBJDIR)/x86.bin of=OS.img
 
 run:
 	qemu-system-i386 -drive format=raw,file=bin/x86.bin,if=ide,index=0,media=disk

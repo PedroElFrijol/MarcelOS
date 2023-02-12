@@ -66,7 +66,7 @@ read_failed_hlt:
   jmp read_failed_hlt
 
 print:
-  mov ah, 0x0E    ; BIOS teletyping function
+  mov byte [0xB8000], 'e'
 
 printLoop:      ;loop until string is null terminated (\0)
   mov al, [si]    ;get current character
@@ -94,7 +94,6 @@ beginProtectedMode:
     mov gs, ax
     mov ss, ax
 
-    mov si, text ;point text to source index
     call print               
 
     jmp codeSegment:kernelLocation
