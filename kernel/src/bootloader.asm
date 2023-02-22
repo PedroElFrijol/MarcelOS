@@ -23,12 +23,11 @@ sti ;enabling interrupts
 mov [BOOT_DISK], dl ;the disk we are trying to read is most likely the disk we booted from (aka "dl")
 
 ; Read in sectors
-mov ax, kernelLocation
-mov es, ax          
-xor bx, bx  ; segment:offset = es:bx
-; formula = (segment * 16) + offset
-; es:bx = 0x07E0(kernel_loc):0x0000
-; (0x07E0 * 16) + 0x0000 = 0x7E00
+mov es, ax
+mov bx, kernelLocation ; segment:offset = es:bx
+                       ; formula = (segment * 16) + offset
+                       ; es:bx = 0x07E0(kernel_loc):0x0000
+                       ; (0x07E0 * 16) + 0x0000 = 0x7E00
 
 mov ah, 2
 mov al, 1 ;number of sectors we want to read which is 1
@@ -37,9 +36,10 @@ mov dh, 0 ;head number which equals 0
 mov cl, 2 ;the sector number which equals 2 because we are reading from the second sector of the same head and the same cyilnder
 mov dl, [BOOT_DISK] ;drive number we saved in the variable
 int 0x13 ;or 13h for disk access
-jc failed ;jump to failed label if something goes wrong
 
-;Enabling the A20 Line
+;segment:offset = (segment * 16) + offset
+
+;Enabling the A20 Line, address line 20, is one of the electrical lines that make up the system bus of an x86-based computer system
 mov al, 0x92
 or al, 0x02
 out 0x92, al
@@ -54,36 +54,7 @@ mov cr0, eax
 
 jmp codeSegment:beginProtectedMode
 
-jmp $
-
 %include "src/gdt.asm"
-
-failed:
-  mov ah, 0x0E
-  mov al, 'E'
-  int 0x10
-read_failed_hlt:
-  jmp read_failed_hlt
-
-print:
-  mov byte [0xB8000], 'e'
-
-printLoop:      ;loop until string is null terminated (\0)
-  mov al, [si]    ;get current character
-  cmp al, 0x0     ;is `al` 0(null terminated)?
-  je endPrint   ;if yes, loop no more and return
-
-  ; `al` stores the character to print, so if it isn't 0(\0), its a valid character.
-  ; invoke `int 0x10` to print character via `AH=0x0E`
-  int 0x10 ;requires the character to be printed to be stored in ah
-
-  ; increment the address of `si` to get next character
-  inc si
-  ; continue the loop until we reach 0x0(\0)
-  jmp printLoop
-
-endPrint:
-  ret ;return to wherever we called the label from
 
 [bits 32]
 beginProtectedMode:
@@ -92,9 +63,7 @@ beginProtectedMode:
     mov ds, ax
     mov fs, ax
     mov gs, ax
-    mov ss, ax
-
-    call print               
+    mov ss, ax           
 
     jmp codeSegment:kernelLocation
 
