@@ -19,7 +19,7 @@ unsigned int Print(char* str, unsigned int pixels){
     return 0;
 };
 
-void __attribute__((section("__start"))) main(){
+int __attribute__((section("__start"))) main(){ //__attribute__((section("main,__start"))) if you are using macos(Mach-O)
     ClearScreen();
     Print("Welcome to MarcelOS!", 0); //0 is the first line of video memory
 
