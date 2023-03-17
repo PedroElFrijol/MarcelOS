@@ -2,6 +2,7 @@
 #define WHITE 0x07 //black background with white text
 
 unsigned int i = 0;
+char* video_memory = (char*) 0xb8000; //start of video memory in protected mode
 
 void ClearScreen(){
     while(i < (80*25*2)){ //80 by 25 characters, each character takes up 2 bytes (80 * 25) is the text mode on x86 machines)
