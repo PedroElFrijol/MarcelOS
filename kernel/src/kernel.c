@@ -15,16 +15,29 @@ void ClearScreen(){
 };
 
 unsigned int Print(char* str, unsigned int pixels){
-    i = (pixels * 80 * 2);
+    i = 0; // reset i to zero before starting to write to video memory
+    while (str[i] != '\0') { // iterate through the string until the null terminator is reached
+        // if we've reached the end of a row, move to the start of the next row
+        if ((i / 2) % 80 == 0 && i != 0) {
+            i += (80 - (i / 2) % 80) * 2; // move to the start of the next row
+        }
+
+        // print the current character to the screen
+        video_memory[i] = str[i];
+        i++;
+        video_memory[i] = WHITE;
+        i++;
+    }
     return 0;
-};
+}
 
 int __attribute__((section("__start"))) main(){ //__attribute__((section("main,__start"))) if you are using macos(Mach-O)
     ClearScreen();
+    i = 0;
     Print("Welcome to MarcelOS!", 0); //0 is the first line of video memory
 
     // Test to see if it works
-    *video_memory = 'e';
+    //*video_memory = 'e';
 
     while(1);
 };
