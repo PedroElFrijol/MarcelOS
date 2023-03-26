@@ -1,12 +1,17 @@
 #pragma once
-#include <stdint.h>
+
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
+typedef unsigned int uint32_t;
+
+typedef struct {
+    //font info
+} Font;
 
 void ClearScreen();
-void Coordinates(int x, int y);
+unsigned int Print(char* str, Font font, uint8_t* framebuffer, int x, int y, unsigned int color);
+Font load_font(const char* font_file);
+uint8_t* fb_info(uint32_t address, uint32_t size);
 
-unsigned int Print(char* str, unsigned int pixels);
-
-Font font = load_font("bin/Marcellus.bdf");
-uint8_t* framebuffer = map_physical_address(0xB8000, 80 * 25 * 2); //lengths of the screen + video memory
-
-void render_text(char* str, Font font, uint8_t framebuffer, int x, int  y, unsigned int color);
+extern Font font;
+extern uint8_t* framebuffer;
