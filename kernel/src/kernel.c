@@ -34,8 +34,10 @@ unsigned int Print(char* str, unsigned int pixels){
 
 int __attribute__((section("__start"))) main(){ //__attribute__((section("main,__start"))) if you are using macos(Mach-O)
     ClearScreen();
-    i = 0;
-    Print("Welcome to MarcelOS!", 0); //0 is the first line of video memory
+    //Print("Welcome to MarcelOS!", 0); //0 is the first line of video memory
+
+    // Render a string of text using the font and the DF rasterization algorithm
+    render_text("Welcome to MarcelOS!", font, framebuffer, 80, 25, 0xFF);
 
     // Test to see if it works
     //*video_memory = 'e';
